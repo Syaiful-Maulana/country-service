@@ -15,9 +15,10 @@ func CountryRoutes(e *echo.Echo, db *sql.DB) {
 	}
 
 	countryRepo := repository.NewCountryRepository(db)
-	countryService := service.NewCountryService(countryRepo)
+	countryService := service.NewCountryService(countryRepo, db)
 	countryHandler := handler.NewCountryHandler(countryService)
 
 	e.GET("/countries", countryHandler.GetAllCountries)
 	e.GET("/countries/:id", countryHandler.GetByIdCountries)
+	e.POST("/countries", countryHandler.CreateCountry)
 }

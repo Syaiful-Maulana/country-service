@@ -2,17 +2,21 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	models "fulka-api/models/country"
 	"log"
 	"strings"
+	"time"
 
-	models "fulka-api/models/country"
+	"github.com/google/uuid"
 )
 
 type CountryRepository interface {
 	GetAllCountries(page int, pageSize int) ([]models.Country, error)
 	GetByIdCountries(id string) (models.Country, error)
 	CountAllCountry() (int, error)
+	CreateCountry(country *models.Country, tx *sql.Tx) error
 }
 
 type countryRepository struct {
@@ -247,4 +251,35 @@ func (r *countryRepository) GetByIdCountries(id string) (models.Country, error) 
 	country.ShippingReviews = reviews
 
 	return country, nil
+}
+
+func (r *countryRepository) CreateCountry(country *models.Country, tx *sql.Tx) error {
+	if tx == nil {
+		return errors.New("transaction is required")
+	}
+
+	country.ID = uuid.New().String()
+	currentTime := time.Now()
+	country.CreatedAt = currentTime
+	country.UpdatedAt = currentTime
+
+	query := `
+    INSERT INTO countries (
+        id, zone_id, name, code, code2, phone_code, created_at, updated_at
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?
+    )
+`
+	_, err := tx.Exec(query,
+		country.ID,
+		country.ZoneId,
+		country.Name,
+		country.Code,
+		country.Code2,
+		country.PhoneCode,
+		country.CreatedAt,
+		country.UpdatedAt,
+	)
+
+	return err
 }

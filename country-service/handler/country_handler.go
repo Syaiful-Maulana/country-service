@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	models "fulka-api/models/country"
 	"fulka-api/service"
 	"fulka-api/util"
 
@@ -64,6 +65,26 @@ func (h *CountryHandler) GetByIdCountries(c echo.Context) error {
 	id := c.Param("id")
 
 	country, err := h.countryService.GetByIdCountries(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": err.Error(),
+		})
+	}
+
+	return util.NewResponse(c, http.StatusOK, "success", "country", country)
+}
+
+func (h *CountryHandler) CreateCountry(c echo.Context) error {
+	log.Printf("CreateCountry request received")
+
+	country := new(models.Country)
+	if err := c.Bind(country); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": err.Error(),
+		})
+	}
+
+	err := h.countryService.CreateCountry(country)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"error": err.Error(),
