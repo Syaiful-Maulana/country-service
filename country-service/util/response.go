@@ -1,6 +1,9 @@
 package util
 
 import (
+	"encoding/json"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,4 +29,20 @@ func NewResponse[T any](c echo.Context, statusCode int, statusMessage string, me
 		Meta: meta,
 		Data: data,
 	})
+}
+
+func WriteJSONResponse(w http.ResponseWriter, status int, result, message string, data interface{}) {
+	meta := Meta{
+		Code:    status,
+		Status:  result,
+		Message: message,
+	}
+	response := map[string]interface{}{
+		"data": data,
+		"meta": meta,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(response)
 }

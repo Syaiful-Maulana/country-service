@@ -2,10 +2,9 @@ package routes
 
 import (
 	"database/sql"
-
-	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
-func RegisterRoutes(e *echo.Echo, db *sql.DB) {
-	CountryRoutes(e, db)
+func RegisterRoutes(mux *http.ServeMux, db *sql.DB) {
+	CountryRoutes(mux, db)
 }

@@ -6,24 +6,17 @@ import (
 	"fulka-api/routes"
 	"fulka-api/util"
 	"log"
-
-	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 func main() {
-	fmt.Println("Starting application...")
-
 	dbUsername := util.GetConfig("DB_USERNAME")
 	dbPassword := util.GetConfig("DB_PASSWORD")
 	dbHost := util.GetConfig("DB_HOST")
 	dbPort := util.GetConfig("DB_PORT")
 	dbName := util.GetConfig("DB_NAME")
-
-	fmt.Println("DB_USERNAME:", dbUsername)
-	fmt.Println("DB_PASSWORD:", dbPassword)
-	fmt.Println("DB_HOST:", dbHost)
-	fmt.Println("DB_PORT:", dbPort)
-	fmt.Println("DB_NAME:", dbName)
+	secreat := util.GetConfig("JWT_SECRET")
+	fmt.Println("secreat", secreat)
 
 	configDB := database.ConfigDB{
 		DB_USERNAME: dbUsername,
@@ -33,18 +26,14 @@ func main() {
 		DB_NAME:     dbName,
 	}
 
-	fmt.Println("Initializing database...")
 	db := configDB.InitDB()
 	if db == nil {
 		log.Fatal("Failed to initialize database")
 	}
 	defer db.Close()
-	fmt.Println("Database initialized successfully")
 
-	e := echo.New()
+	mux := http.NewServeMux()
+	routes.RegisterRoutes(mux, db)
 
-	routes.RegisterRoutes(e, db)
-
-	fmt.Println("Starting server on port 1323...")
-	log.Fatal(e.Start(":1323"))
+	log.Fatal(http.ListenAndServe(":1323", mux))
 }
