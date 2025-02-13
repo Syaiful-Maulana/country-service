@@ -7,4 +7,5 @@ import (
 
 func RegisterRoutes(mux *http.ServeMux, db *sql.DB) {
 	CountryRoutes(mux, db)
+	LoggerRoutes(mux, db)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"fulka-api/database"
 	"fulka-api/routes"
 	"fulka-api/util"
@@ -15,8 +14,7 @@ func main() {
 	dbHost := util.GetConfig("DB_HOST")
 	dbPort := util.GetConfig("DB_PORT")
 	dbName := util.GetConfig("DB_NAME")
-	secreat := util.GetConfig("JWT_SECRET")
-	fmt.Println("secreat", secreat)
+	// secreat := util.GetConfig("JWT_SECRET")
 
 	configDB := database.ConfigDB{
 		DB_USERNAME: dbUsername,

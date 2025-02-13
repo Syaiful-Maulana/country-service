@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"fulka-api/util"
 	"net/http"
 	"strings"
@@ -13,7 +12,7 @@ import (
 func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
-		fmt.Println("auth", authHeader)
+		// fmt.Println("auth", authHeader)
 		if authHeader == "" {
 			util.WriteJSONResponse(w, http.StatusUnauthorized, "Missing token", "unauthorized", nil)
 			return
