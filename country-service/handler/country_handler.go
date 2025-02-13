@@ -38,13 +38,13 @@ func (h *CountryHandler) GetAllCountries(w http.ResponseWriter, r *http.Request)
 
 	countries, err := h.countryService.GetAllCountries(pageInt, pageNumberInt)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		util.WriteJSONResponse(w, http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
 
 	countCountries, err := h.countryService.CountAllCountry()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		util.WriteJSONResponse(w, http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
 

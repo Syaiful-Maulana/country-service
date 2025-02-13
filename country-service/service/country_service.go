@@ -26,7 +26,11 @@ func NewCountryService(repo repository.CountryRepository, db *sql.DB) CountrySer
 }
 
 func (s *countryService) GetAllCountries(pageSize, offset int) ([]models.Country, error) {
-	return s.repo.GetAllCountries(pageSize, offset)
+	countries, err := s.repo.GetAllCountries(pageSize, offset)
+	if err != nil {
+		return nil, err
+	}
+	return countries, nil
 }
 
 func (s *countryService) CountAllCountry() (int, error) {
